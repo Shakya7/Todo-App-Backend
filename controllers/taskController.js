@@ -1,3 +1,4 @@
+const { findById } = require("../models/taskModel");
 const Task=require("../models/taskModel");
 const Todo=require("../models/todoModel");
 
@@ -78,4 +79,54 @@ exports.updateTask=async (req,res)=>{
             message: err.message
         })
     }
+}
+
+exports.deleteTask=async(req,res)=>{
+    try{
+        const {id}=req.params;
+        const data=await Task.findById(id);
+
+        await Task.findByIdAndDelete(id);
+        await Todo.findByIdAndUpdate(data.todo,{
+            $pull:{
+                tasks:id
+            }
+        })
+        res.status(204).json({
+            status:"success",
+            data:{
+                message:"Task deleted successfully"
+            }
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}
+
+exports.deleteTasks=async(req,res)=>{
+    try{
+        await Task.deleteMany();
+        await Todo.updateMany({},{
+            tasks:[]
+        },{
+            new:true,
+            runValidators:true
+        });
+        res.status(204).json({
+            status:"success",
+            data:{
+                message:"Tasks deleted successfully"
+            }
+        })
+
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+    
 }

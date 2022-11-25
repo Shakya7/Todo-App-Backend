@@ -1,4 +1,5 @@
 const Todo = require("../models/todoModel");
+const Task = require("../models/taskModel");
 
 exports.createSingleTodo=async (req,res)=>{
     //const {title}=req.body;
@@ -98,7 +99,8 @@ exports.deleteSingleTodo=async(req,res)=>{
 
 exports.deleteAllTodos=async(req,res)=>{
     try{
-        await Todo.deleteMany()
+        await Task.deleteMany();
+        await Todo.deleteMany();
         res.status(204).json({
             status:"success",
             data:{
