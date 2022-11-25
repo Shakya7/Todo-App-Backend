@@ -23,6 +23,23 @@ exports.createTask=async(req,res)=>{
     }
 }
 
+exports.getTask=async(req,res)=>{
+    try{
+        const task=await Task.findById(req.params.id)
+        res.status(200).json({
+            status:"success",
+            data:{
+                task
+            }
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}
+
 exports.getAllTasks=async (req,res)=>{
     try{
         const tasks=await Task.find()
@@ -40,4 +57,25 @@ exports.getAllTasks=async (req,res)=>{
         })
     }
     
+}
+
+exports.updateTask=async (req,res)=>{
+    try{
+        const {id}=req.params;
+        const updatedTask=await Task.findByIdAndUpdate(id,req.body,{
+            new:true,
+            runValidators:true
+        });
+        res.status(200).json({
+            status:"success",
+            data:{
+                todo:updatedTask
+            }
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
 }

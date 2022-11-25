@@ -1,5 +1,4 @@
 const mongoose=require("mongoose");
-const Todo=require("./todoModel");
 
 const taskSchema=new mongoose.Schema({
     content: String,
