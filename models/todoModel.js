@@ -1,15 +1,19 @@
 const mongoose=require("mongoose");
 
 const todoSchema=new mongoose.Schema({
-    title: String,
-    color: {
+    title: {
         type:String,
-        default:"#CAD5E2"
+        required:[true,"Please provide a title of todo"]
+    },
+    createDate:{
+        type: Date
+    },
+    updatedDate:{
+        type:Date
     },
     tasks:[
         {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Task"
+            type:String
         }
     ]
 })
