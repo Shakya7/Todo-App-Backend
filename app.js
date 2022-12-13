@@ -3,7 +3,7 @@ const dotenv=require("dotenv");
 const todoRouter=require("./routers/todoRouter");
 const cors=require("cors");
 
-dotenv.config({path:"./config.env"});
+dotenv.config({path:".env"});
 
 const app=express();
 

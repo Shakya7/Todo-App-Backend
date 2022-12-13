@@ -4,7 +4,7 @@ const mongoose=require("mongoose");
 
 function connectDB(){
     try{
-        mongoose.connect(process.env.DB_NAME.replace("<username>",process.env.DB_USERNAME).replace("<password>",process.env.DB_PASSWORD),{
+        mongoose.connect(process.env.DB_CONNECTION.replace("<username>",process.env.DB_USERNAME).replace("<password>",process.env.DB_PASSWORD).replace("myDatabase",process.env.DB_NAME),{
             useNewUrlParser: true,
             useUnifiedTopology:true
         });

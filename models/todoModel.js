@@ -13,9 +13,17 @@ const todoSchema=new mongoose.Schema({
     },
     tasks:[
         {
-            type:String
+            title:String,
+            inProgress:{
+                type:Boolean,
+                default:true
+            },
+            id:String
+
         }
-    ]
+    ],
+    userID:String,
+    priority:String
 })
 
 
