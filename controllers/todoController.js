@@ -37,7 +37,8 @@ exports.getTodo=async(req,res)=>{
 
 exports.getAllTodos=async (req,res)=>{
     try{
-        const todos=await Todo.find();
+        const {id}=req.params;
+        const todos=await Todo.find({userID:id});
         res.status(200).json({
             status:"success",
             total_todos:todos.length,
