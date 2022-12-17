@@ -113,3 +113,20 @@ exports.createTask=async(req,res)=>{
         })
     }
 }
+
+exports.updateSingleTaskCheckbox=async(req,res)=>{
+    try{
+        const todo=await Todo.findOne({_id:req.params.id});
+        const taskToBeUpdated=todo.tasks.filter((task)=>task.id===req.body.taskID);
+        taskToBeUpdated[0].inProgress=!(taskToBeUpdated[0].inProgress);
+        await todo.save();
+        res.status(200).json({
+            todo
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}
