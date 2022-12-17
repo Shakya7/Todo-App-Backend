@@ -95,3 +95,21 @@ exports.updateTask=async(req,res)=>{
         })
     }
 }
+
+exports.createTask=async(req,res)=>{
+    try{
+        const todo=await Todo.findByIdAndUpdate(req.params.id,{
+            $push:{
+                tasks:req.body
+            }
+        },{new:true})
+        res.status(200).json({
+            todo
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}

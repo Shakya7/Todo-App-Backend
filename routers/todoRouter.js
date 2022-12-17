@@ -13,6 +13,7 @@ router.route("/updateTodo/:id").patch(todoController.updateTodo);
 //Task routes
 router.route("/deleteTask/:id").patch(todoController.deleteTask);
 router.route("/updateTask/:id").patch(todoController.updateTask);
+router.route("/createTask/:id").patch(todoController.createTask);
 
 
 
