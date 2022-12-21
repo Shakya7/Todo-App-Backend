@@ -130,3 +130,75 @@ exports.updateSingleTaskCheckbox=async(req,res)=>{
         })
     }
 }
+function inProgressTodos(todos){
+    const updatedTodos=[];
+    for(let i=0;i<todos.length;i++){
+        if(todos[i].tasks.length!==0){
+            for(let j=0;j<todos[i].tasks.length;j++){
+                if(todos[i].tasks[j].inProgress===true){
+                    updatedTodos.push(todos[i]);
+                    break;
+                }
+            }
+        }
+        else
+            updatedTodos.push(todos[i]);
+    }
+    return updatedTodos;
+}
+
+exports.getInProgressTodos=async (req,res)=>{
+    try{
+        const {id}=req.params;
+        const todos=await Todo.find({userID:id});
+        const filteredTodos=inProgressTodos(todos);
+        res.status(200).json({
+            filteredTodos
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}
+
+function completedTodos(todos){
+    const updatedTodos=[];
+    for(let i=0;i<todos.length;i++){
+        let flag=true;
+        if(todos[i].tasks.length!==0){
+            for(let j=0;j<todos[i].tasks.length;j++){
+                if(todos[i].tasks[j].inProgress===false){
+                    flag=true;
+                    continue;
+                }
+                else{
+                    flag=false
+                    break;
+                }
+                    
+            }
+            if(flag)
+                updatedTodos.push(todos[i]);
+        }
+
+    }
+    return updatedTodos;
+}
+
+exports.getCompletedTodos=async (req,res)=>{
+    try{
+        const {id}=req.params;
+        const todos=await Todo.find({userID:id});
+        const filteredTodos=completedTodos(todos);
+        res.status(200).json({
+            filteredTodos
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}

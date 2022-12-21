@@ -8,6 +8,10 @@ router.route("/createTodo").post(todoController.createSingleTodo);
 router.route("/getAllTodos/:id").get(todoController.getAllTodos);
 router.route("/updateTodo/:id").patch(todoController.updateTodo);
 
+//Update or Sort or Filter
+router.route("/getInProgressTodos/:id").get(todoController.getInProgressTodos);
+router.route("/getCompletedTodos/:id").get(todoController.getCompletedTodos);
+
 
 
 //Task routes
