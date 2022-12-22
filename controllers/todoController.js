@@ -1,7 +1,6 @@
 const Todo = require("../models/todoModel");
 
 exports.createSingleTodo=async (req,res)=>{
-    //const {title}=req.body;
     try{
     const newTodo=await Todo.create(req.body);
     console.log("Created a new id of ",newTodo._id);
@@ -83,6 +82,7 @@ exports.updateTask=async(req,res)=>{
         const todo=await Todo.findOne({_id:req.params.id});
         const taskToBeUpdated=todo.tasks.filter((task)=>task.id===req.body.taskID);
         taskToBeUpdated[0].title=req.body.newTitle;
+        todo.updatedDate=new Date(Date.now());
         await todo.save()
         res.status(200).json({
             todo
@@ -102,7 +102,9 @@ exports.createTask=async(req,res)=>{
             $push:{
                 tasks:req.body
             }
-        },{new:true})
+        },{new:true});
+        todo.updatedDate=new Date(Date.now());
+        await todo.save();
         res.status(200).json({
             todo
         })
@@ -119,6 +121,7 @@ exports.updateSingleTaskCheckbox=async(req,res)=>{
         const todo=await Todo.findOne({_id:req.params.id});
         const taskToBeUpdated=todo.tasks.filter((task)=>task.id===req.body.taskID);
         taskToBeUpdated[0].inProgress=!(taskToBeUpdated[0].inProgress);
+        todo.updatedDate=new Date(Date.now());
         await todo.save();
         res.status(200).json({
             todo
