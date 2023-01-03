@@ -1,6 +1,7 @@
 const express=require("express");
 const dotenv=require("dotenv");
 const todoRouter=require("./routers/todoRouter");
+const eventRouter=require("./routers/eventRouter");
 const cors=require("cors");
 
 dotenv.config({path:".env"});
@@ -20,6 +21,7 @@ app.use(cors(corsOptions));
 
 
 app.use("/api/v1/todos",todoRouter);
+app.use("/api/v1/events", eventRouter);
 app.get("/test",(req,res)=>{
     res.status(200).json({
         data:"success test"
