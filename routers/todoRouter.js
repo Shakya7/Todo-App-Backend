@@ -7,6 +7,7 @@ const router=express.Router();
 router.route("/createTodo").post(todoController.createSingleTodo);
 router.route("/getAllTodos/:id").get(todoController.getAllTodos);
 router.route("/updateTodo/:id").patch(todoController.updateTodo);
+router.route("/deleteTodo/:id").delete(todoController.deleteTodo);
 
 //Update or Sort or Filter
 router.route("/getInProgressTodos/:id").get(todoController.getInProgressTodos);

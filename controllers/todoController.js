@@ -205,3 +205,17 @@ exports.getCompletedTodos=async (req,res)=>{
         })
     }
 }
+
+exports.deleteTodo=async (req,res)=>{
+    try{
+        await Todo.findByIdAndDelete(req.params.id);
+        res.status(200).json({
+            status:"deleted"
+        })
+    }catch(err){
+        res.status(400).json({
+            status:"failed",
+            message: err.message
+        })
+    }
+}
