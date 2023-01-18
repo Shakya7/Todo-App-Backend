@@ -139,3 +139,22 @@ exports.checkCookiePresent=async(req,res)=>{
         });
     }    
 }
+
+exports.checkPassword=async(req,res,next)=>{
+    try{
+        //console.log("Hello")
+        const user=await User.findById(req.params.userid).select("+password");
+        if(!user)
+            return next("No user found! Please signup first...");
+        else if(!await user.compareNormalPwithHashedP(req.body.password,user.password))
+            return next("Incorrect password provided");
+        res.user=user;
+        next();
+    }catch(err){
+        console.log(err.message);
+        res.status(400).json({
+            status:"fail",
+            message:err.message
+        })
+    }
+}
