@@ -1,6 +1,6 @@
 const User=require("../models/userModel");
 const jwt=require("jsonwebtoken");
-//const emailSend=require("../utils/email");
+const emailSend=require("../utils/email");
 const crypto=require("crypto");
 const bcrypt=require("bcryptjs");
 
@@ -155,6 +155,101 @@ exports.checkPassword=async(req,res,next)=>{
         res.status(400).json({
             status:"fail",
             message:err.message
+        })
+    }
+}
+
+exports.forgotPass=async(req,res,next)=>{
+    const user=await User.findOne({email:req.body.email});
+    if(!user)
+        return next("Email is not registered. Please enter valid registered email");
+    const resetToken=await user.getResetToken();
+    await user.save({validateBeforeSave:false});
+    //`${req.protocol}://${"localhost:3000" || req.get("host")}/resetPassword/${resetToken}`
+    const resetURL=`${process.env.REACT_URL}/resetPassword/${resetToken}`;
+    const message=`Forgot your password? Go to ${resetURL} and change the password`;
+    try{
+        await emailSend({
+            email:user.email,
+            subject:"Your TraceBIT - Reset Token",
+            message
+        });
+        res.status(200).json({
+            status:"success",
+            message:"Token sent to email, please check..."
+        });
+    }
+    catch(err){
+        this.passwordResetToken=undefined;
+        this.passwordResetExpires=undefined;
+        await user.save({validateBeforeSave:false});
+        console.log("failed", err)
+        res.status(400).json({
+            status:"fail",
+            message:err.message,
+            data:{
+                user:null
+            }
+        })
+    }
+}
+
+exports.resetPassword=async(req,res,next)=>{
+    try{
+    const hashedToken=crypto.createHash("sha256").update(req.params.token).digest("hex");
+    console.log(hashedToken);
+    const user=await User.findOne({passwordResetToken:hashedToken,passwordResetTokenExpiry:{$gte:Date.now()}});
+    console.log(user);
+    if(!user)
+        return next("Token expired or invalid token provided");
+    console.log(req.body.password);
+    console.log(req.body.confirmPassword);
+    if(req.body.password!==req.body.confirmPassword)
+        return next("Password not matched");
+    user.passwordResetToken=undefined;
+    user.passwordResetTokenExpiry=undefined;
+    const updatedUser=await User.findByIdAndUpdate(user._id,{
+        password:await bcrypt.hash(req.body.password,12),
+        confirmPassword:undefined,
+        passwordChangedAt:Date.now()-1000,
+    },{new:true});
+    //user.password=req.body.password;
+    //user.confirmPassword=req.body.confirmPassword;
+    //user.passwordResetToken=undefined;
+    //user.passwordResetTokenExpiry=undefined;
+    //await user.save(); 
+    await updatedUser.clearResetToken();
+    
+    res.status(200).json({
+        status:"success",
+        
+        message:"Password has been reset"
+    })
+    }catch(err){
+        console.log(err)
+        res.status(400).json({
+            status:"fail",
+            message: err.message
+        });
+    }
+}
+
+exports.checkResetToken=async(req,res)=>{
+    try{
+        const hashedToken=crypto.createHash("sha256").update(req.body.passwordResetToken).digest("hex");
+        const user=await User.findOne({passwordResetToken:hashedToken,passwordResetTokenExpiry:{$gte:Date.now()}});
+        if(!user)
+            throw "The link is not correct. Please enter correct link";
+        res.status(200).json({
+            status:"success",
+            message:"Reset token found!",
+            user
+        })
+    }catch(err){
+        res.status(401).json({
+            status:"fail",
+            message:"Reset token not found",
+            user:null
         })
     }
 }

@@ -13,6 +13,9 @@ router.route("/updateName/:id").patch(userController.updateName);
 router.route("/updateMail/:userid").patch(authController.checkPassword, userController.updateEmail);
 router.route("/updateMobile/:userid").patch(authController.checkPassword, userController.updateMobile);
 router.route("/updatePassword/:userid").patch(userController.updatePassword);
+router.route("/forgotPassword").post(authController.forgotPass);
+router.route("/resetPassword/:token").patch(authController.resetPassword);
+router.route("/checkResetToken").post(authController.checkResetToken);
 
 router.route("/test").get(userController.test);
 
