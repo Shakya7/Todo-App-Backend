@@ -11,15 +11,29 @@ dotenv.config({path:".env"});
 
 const app=express();
 
+const allowedOrigins = [
+    "https://tracebit.netlify.app"
+]
+
 const corsOptions={
-    origin:`${process.env.REACT_URL}`,
-    credentials:true
+    // origin:`${process.env.REACT_URL}`,
+    // credentials:true
+    origin: (origin, callback) => {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200
 }
 
 
 //Default middleware configs 
-app.use(express.json());
+
 app.use(cors(corsOptions));
+app.use(express.json());
 app.use(cookieParser());
 
 
