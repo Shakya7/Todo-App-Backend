@@ -13,7 +13,6 @@ exports.getProfileData=async(req,res)=>{
         })
 
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message
@@ -23,7 +22,6 @@ exports.getProfileData=async(req,res)=>{
 
 exports.updateName=async(req,res)=>{
     try{
-        console.log("Helllo")
         const user=await User.findByIdAndUpdate(req.params.id,{
             name:req.body.name
         },{new:true});
@@ -36,7 +34,6 @@ exports.updateName=async(req,res)=>{
 
 
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message
@@ -82,7 +79,6 @@ exports.updateEmail=async(req,res)=>{
         })
         
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message
@@ -104,7 +100,6 @@ exports.updateMobile=async(req,res)=>{
         })
         
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message

@@ -78,7 +78,6 @@ userSchema.methods.getResetToken=async function(){
 userSchema.methods.clearResetToken=function(){
     this.passwordResetToken=undefined;
     this.passwordResetTokenExpiry=undefined;
-    console.log("Removed, lets see");
 }
 
 

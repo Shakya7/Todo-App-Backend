@@ -22,7 +22,6 @@ exports.signup=async(req,res)=>{
         }
     })
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message
@@ -41,9 +40,7 @@ exports.login=async(req,res)=>{
         const correct=await user.compareNormalPwithHashedP(password,user.password);
         if(!correct) 
             throw `Please provide valid email or password`;   
-        //console.log(user);
         const token= jwt.sign({id:user._id,email:user.email},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRES}); 
-        console.log("Token ",token);
         const cookieOptions={
             expires:new Date(Date.now()+process.env.COOKIE_EXPIRES*24*60*60*1000),
             httpOnly:true,
@@ -59,7 +56,6 @@ exports.login=async(req,res)=>{
             }
         })
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message
@@ -85,7 +81,6 @@ exports.logout=async(req,res)=>{
             message:"Cookie has been deleted"
         });
     }catch(err){
-        console.log(err);
         res.status(400).json({
             status:"failed",
             message: err.message
@@ -107,7 +102,6 @@ exports.protectRouteWithJWT=async(req,res,next)=>{
     res.user=user;
     next();
     }catch(err){
-        console.log(err.message);
         res.status(400).json({
             status:"fail",
             message:err.message
@@ -134,7 +128,6 @@ exports.checkCookiePresent=async(req,res)=>{
         }
     });
     }catch(err){
-        console.log(err.message);
         res.status(401).json({
             status:"failure",
             data:{
@@ -146,7 +139,6 @@ exports.checkCookiePresent=async(req,res)=>{
 
 exports.checkPassword=async(req,res,next)=>{
     try{
-        //console.log("Hello")
         const user=await User.findById(req.params.userid).select("+password");
         if(!user)
             return next("No user found! Please signup first...");
@@ -155,7 +147,6 @@ exports.checkPassword=async(req,res,next)=>{
         res.user=user;
         next();
     }catch(err){
-        console.log(err.message);
         res.status(400).json({
             status:"fail",
             message:err.message
@@ -187,7 +178,6 @@ exports.forgotPass=async(req,res,next)=>{
         this.passwordResetToken=undefined;
         this.passwordResetExpires=undefined;
         await user.save({validateBeforeSave:false});
-        console.log("failed", err)
         res.status(400).json({
             status:"fail",
             message:err.message,
@@ -201,13 +191,9 @@ exports.forgotPass=async(req,res,next)=>{
 exports.resetPassword=async(req,res,next)=>{
     try{
     const hashedToken=crypto.createHash("sha256").update(req.params.token).digest("hex");
-    console.log(hashedToken);
     const user=await User.findOne({passwordResetToken:hashedToken,passwordResetTokenExpiry:{$gte:Date.now()}});
-    console.log(user);
     if(!user)
         return next("Token expired or invalid token provided");
-    console.log(req.body.password);
-    console.log(req.body.confirmPassword);
     if(req.body.password!==req.body.confirmPassword)
         return next("Password not matched");
     user.passwordResetToken=undefined;
@@ -226,11 +212,9 @@ exports.resetPassword=async(req,res,next)=>{
     
     res.status(200).json({
         status:"success",
-        
         message:"Password has been reset"
     })
     }catch(err){
-        console.log(err)
         res.status(400).json({
             status:"fail",
             message: err.message

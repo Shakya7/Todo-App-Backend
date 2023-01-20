@@ -3,7 +3,6 @@ const Todo = require("../models/todoModel");
 exports.createSingleTodo=async (req,res)=>{
     try{
     const newTodo=await Todo.create(req.body);
-    console.log("Created a new id of ",newTodo._id);
     res.status(201).json({
         status:"success",
         data:{
@@ -56,7 +55,6 @@ exports.updateTodo=async(req,res)=>{
 
 exports.deleteTask=async(req,res)=>{
     try{
-        console.log(req.body.taskID)
         await Todo.findByIdAndUpdate(req.params.id,{
             $pull:{
                 tasks:{_id:req.body.taskID}
