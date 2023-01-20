@@ -161,7 +161,7 @@ exports.forgotPass=async(req,res,next)=>{
     const resetToken=await user.getResetToken();
     await user.save({validateBeforeSave:false});
     //`${req.protocol}://${"localhost:3000" || req.get("host")}/resetPassword/${resetToken}`
-    const resetURL=`${process.env.REACT_URL}/resetPassword/${resetToken}`;
+    const resetURL=`${process.env.REACT_URL}resetPassword/${resetToken}`;
     const message=`Forgot your password? Go to ${resetURL} and change the password`;
     try{
         await emailSend({
